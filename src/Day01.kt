@@ -1,40 +1,17 @@
 import kotlin.math.abs
 
-val regex = Regex("""\d+""")
-
 fun main() {
-    fun getLists(input: List<String>): Pair<List<Int>, List<Int>> {
-        val leftList = mutableListOf<Int>()
-        val rightList = mutableListOf<Int>()
-
-        input.forEach { line ->
-            val matches = regex.findAll(line)
-            leftList.add(matches.first().value.toInt())
-            rightList.add(matches.last().value.toInt())
-        }
-
-        return Pair(leftList, rightList)
-    }
-
     fun part1(input: List<String>): Int {
-        val lists = getLists(input)
-        val leftList = lists.first.sorted()
-        val rightList = lists.second.sorted()
-
-        return leftList.foldIndexed(0) { index, acc, _ ->
-            acc + abs(rightList[index] - leftList[index])
-        }
+        val list1 = input.map { s -> s.substringBefore(' ').toInt() }.sorted()
+        val list2 = input.map { s -> s.substringAfterLast(' ').toInt() }.sorted()
+        return list1.zip(list2) { a, b -> abs(a - b) }.sum()
     }
 
     fun part2(input: List<String>): Int {
-        val lists = getLists(input)
-        val leftList = lists.first
-        val rightList = lists.second
+        val list1 = input.map { s -> s.substringBefore(' ').toInt() }
+        val list2 = input.map { s -> s.substringAfterLast(' ').toInt() }
 
-        return leftList.foldIndexed(0) {index, acc, _ ->
-            val atLeft = leftList[index]
-            acc + atLeft * rightList.count { item -> item == atLeft }
-        }
+        return list1.sumOf { n -> list2.count { it == n } * n }
     }
 
     // Or read a large test input from the `src/Day01_test.txt` file:
