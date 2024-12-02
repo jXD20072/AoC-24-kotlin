@@ -1,3 +1,7 @@
+package Day02
+
+import println
+import readInput
 import kotlin.math.abs
 
 fun main() {
@@ -26,7 +30,6 @@ fun main() {
             }
         }
     }
-
 
     val testInput = readInput("Day02_test")
     check(part1(testInput) == 2)
