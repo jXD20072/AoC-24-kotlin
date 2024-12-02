@@ -1,52 +1,32 @@
 import kotlin.math.abs
 
 fun main() {
-    fun getUnsafeLevels(input: List<Int>): List<Int> {
-        val distances = input.mapIndexed { index, i -> input.getOrElse(index + 1) {i} - i }.dropLast(1)
-        val ascending = distances.map { d -> if (d == 0) 0 else d / abs(d) }.average() > 0
+    fun isReportSafe(report: List<Int>): Boolean {
+        val isAllIncreasing = report.sorted() == report
+        val isAllDecreasing = report.sortedDescending() == report
 
-        val unsafeLevels = mutableListOf<Int>()
-        input.forEachIndexed { index, num ->
-            if (index == input.size - 1) return@forEachIndexed
-            val difference = (input[index + 1] - num)
-
-            if (difference > 0 != ascending || abs(difference) < 1 || abs(difference) > 3) {
-                unsafeLevels.addLast(index)
-                unsafeLevels.addLast(index + 1)
-            }
-        }
-
-        return unsafeLevels
+        return ((isAllIncreasing || isAllDecreasing)
+                && report.zipWithNext().all { abs(it.first - it.second) in 1..3 })
     }
 
     fun part1(input: List<String>): Int {
-        return input.count { line ->
-            val numbers = line.split(" ").map { it.toInt() }
-
-            getUnsafeLevels(numbers).isEmpty()
-        }
+        return input.count { l -> isReportSafe(l.split(" ").map { n -> n.toInt() }) }
     }
 
     fun part2(input: List<String>): Int {
-        return input.count { line ->
-            val numbers = line.split(" ").map { it.toInt() }
+        return input.count { l ->
+            val report = l.split(" ").map { n -> n.toInt() }
 
-            val unsafeLevels = getUnsafeLevels(numbers)
-            if (unsafeLevels.isEmpty()) {
-                true
-            } else {
-                unsafeLevels.forEach { unsafe ->
-                    val newNumbers = numbers.toMutableList()
-                    newNumbers.removeAt(unsafe)
-
-                    if (getUnsafeLevels(newNumbers).isEmpty()) {
-                        return@count true
-                    }
-                }
-                false
+            isReportSafe(report) || report.indices.any { i -> isReportSafe(report
+                .toMutableList()
+                .run {
+                    this.removeAt(i)
+                    this
+                })
             }
         }
     }
+
 
     val testInput = readInput("Day02_test")
     check(part1(testInput) == 2)
