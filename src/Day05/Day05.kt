@@ -44,15 +44,11 @@ fun main() {
             while (!isUpdateValid(newUpdate, rules)) {
                 rules.forEach { rule ->
                     if (newUpdate.contains(rule.second) && newUpdate.indexOf(rule.first) > newUpdate.indexOf(rule.second)) {
-                        println("\n")
-                        println("List error: $newUpdate $rule ---- ${rule.first} < ${rule.second}")
                         newUpdate.removeAt(newUpdate.indexOf(rule.second))
                         newUpdate.add(newUpdate.indexOf(rule.first) + 1, rule.second)
-                        println("New list: $newUpdate, Valid? ${isUpdateValid(newUpdate, rules)}")
                     }
                 }
             }
-            println("--- ${newUpdate[newUpdate.size / 2]} ---")
             acc + newUpdate[newUpdate.size/2]
         }
     }
